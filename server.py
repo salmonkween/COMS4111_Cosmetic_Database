@@ -142,7 +142,7 @@ def main():
         pcategory = None if not request.form['pcategory'] else request.form['pcategory']
 
         #new just added
-        cursor = g.conn.execute("SELECT p.* FROM product p, belong b, category c WHERE (%s IS NULL OR p.productname = %s) AND (%s IS NULL OR p.price = %s) AND (%s IS NULL OR (c.categoryid=b.categoryid AND c.categoryname=%s AND b.productid=p.productid))",
+        cursor = g.conn.execute("SELECT DISTINCT p.* FROM product p, belong b, category c WHERE (%s IS NULL OR p.productname = %s) AND (%s IS NULL OR p.price = %s) AND (%s IS NULL OR (c.categoryid=b.categoryid AND c.categoryname=%s AND b.productid=p.productid))",
             pproductname, pproductname, pprice, pprice, pcategory, pcategory)
         product = cursor.fetchall()
         cursor.close()
