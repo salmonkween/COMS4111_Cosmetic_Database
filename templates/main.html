@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %} Ibuybeauty {% endblock %}
+{% block body %}
+
+<h2>Cosmetic products</h2>
+
+<form method="POST" action="/main" class="col s12">
+  <div class="row review-form">
+    <div class="input-field col s12 hide">
+      <input placeholder="True" id="search" name="search" type="text" class="validate">
+      <label>Search?</label>
+    </div>
+    <div class="input-field col s4">
+      <input placeholder="Product name" id="search-title" name="pproductname" type="text" class="validate">
+      <label>Search product</label>
+    </div>
+    <div class="input-field col s4">
+      <input placeholder="Price" id="search-year" name="pprice" type="text" class="validate">
+      <label>Search price</label>
+    </div>
+    <button class="btn waves-effect waves-light red lighten-2 btn-small" type="submit" name="search">Search Product</button>
+  </div>
+</form>
+
+<div>
+  {% for pid, size, productname, price, description in product %}
+  <div class="card">
+    <div class="card-content">
+    
+      <!-- Modal trigger for writing review -->
+      <a class="waves-effect waves-light btn-small modal-trigger write-review-trigger" href="#write-review-{{pid}}">Write Review</a>
+      
+      <!-- Product name and main info -->
+      <h5><em>{{ productname }}</em></h5>
+      
+      <p><b>Product ID</b>: {{ pid }} | <b>Price</b>: $ {{ price }} | <b>Size</b>: {{ size }} </p>
+      
+      <!-- Community Rating -->
+      {% for categoryid, productid, p, cname in category %}
+        {% if productid == pid %}
+        <p class="category"><b>Category</b>: {{ cname }} </p>
+        {% endif %}
+      {% endfor %}
+      
+      <!-- Get supplier -->
+      <p class="supply">
+      {% for productid, supplierid, suppliername, productname in supplier %}
+        {% if productid == pid %}
+        <b>Supplier</b>: {{ suppliername }} | 
+        {% endif %}
+      {% endfor %}
+      {% for productid, productname, suppliername, supplierid, cost, date in supplier_transaction %}
+        {% if productid == pid %}
+        <b>Purchased price</b>: ${{ cost }} 
+        {% endif %}
+      {% endfor %}
+      </p>
+      
+      <!-- Description -->
+      <p><b>Description</b>: {{ description }}</p>
+      
+      <!-- Community Rating -->
+      {% for productid, productname, avg_rating in product_ratings %}
+        {% if productid == pid %}
+        <p class="rating"><b>Customer Rating</b>:{{ avg_rating }} </p>
+        {% endif %}
+      {% endfor %}
+      
+      
+      <!-- Modal: Write Review -->
+      <div id="write-review-{{pid}}" class="modal">
+        <div class="modal-content">
+          <h4>Write a Review for: {{ productname }}</h4>
+          <form method="POST" action="/write_review" class="col s12">
+            <div class="row review-form">
+            
+              <!-- Review: pid (hidden) -->
+              <div class="input-field col s12 hide">
+                <input value="{{pid}}" id="pid-{{pid}}" name="pid" type="text" class="validate">
+                <label for="pid-{{pid}}">rid</label>
+              </div>
+              
+              <!-- Review: rating -->
+              {% set vars = {'rate': 0, 'productid': 0} %}
+              {% for productid, productname, rating, ratingtitle, loved, customerid in product_reviews %}
+                {% if productid == pid %}
+                  {% if vars.update({'rate': rating, 'productid': productid}) %}{% endif %}
+                {% endif %}
+              {% endfor %}
+              
+              <!-- Review: ratingID -->
+              <div class="input-field col s12">
+                <input placeholder="100" id="rid-{{rid}}" name="rid" type="text" class="validate">
+                <label>Rating ID</label>
+              </div>
+              
+              <div class="input-field col s12">
+                <select name="rating">
+                  <option value="" disabled selected>Choose your rating</option>
+                  <option value="1" {% if vars.rate == 1 %}selected="selected"{% endif %}>1</option>
+                  <option value="2" {% if vars.rate == 2 %}selected="selected"{% endif %}>2</option>
+                  <option value="3" {% if vars.rate == 3 %}selected="selected"{% endif %}>3</option>
+                  <option value="4" {% if vars.rate == 4 %}selected="selected"{% endif %}>4</option>
+                  <option value="5" {% if vars.rate == 5 %}selected="selected"{% endif %}>5</option>
+                </select>
+                <label>Rating</label>
+              </div>
+              
+              <div class="input-field col s12">
+                <select name="loved">
+                  <option value="" disabled selected>Choose your rating</option>
+                  <option value="0" {% if vars.rate == 0 %}selected="selected"{% endif %}>0</option>
+                  <option value="1" {% if vars.rate == 1 %}selected="selected"{% endif %}>1</option>
+                </select>
+                <label>Do you love this product?</label>
+              </div>
+              
+              
+              <!-- Review: text -->
+              <div class="input-field col s12">
+                {% set vars = {'textPlaceholder': False} %}
+                {% for productid, productname, rating, ratingtext, loved, customerid in product_reviews %}
+                  {% if pid == productid %}
+                    {% if vars.update({'textPlaceholder': True, 'text': ratingtext}) %}{% endif %}
+                  {% endif %}
+                {% endfor %}
+
+                <textarea placeholder="{% if vars.textPlaceholder %}{{ vars.text }}{% endif %}" id="textarea-{{pid}}" name="text" class="materialize-textarea"></textarea>
+                <label for="textarea-{{pid}}">Review</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+              <button class="btn waves-effect waves-light" type="submit" name="write_review">Submit Review</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+
+  </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}
