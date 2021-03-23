@@ -31,6 +31,9 @@
   <div class="card">
     <div class="card-content">
     
+      <!-- Modal trigger for writing review -->
+      <a class="waves-effect waves-light btn-small modal-trigger write-review-trigger" href="#write-review-{{pid}}">Write Review</a>
+      
       <!-- Product name and main info -->
       <h5><em>{{ productname }}</em></h5>
       
@@ -67,12 +70,7 @@
         {% endif %}
       {% endfor %}
       
-      <!-- Modal trigger for writing review -->
-      <a class="waves-effect waves-light btn-small modal-trigger write-review-trigger" href="#write-review-{{pid}}">Write Review</a>
-
-      <!-- Modal trigger for buying product -->
-      <a class="waves-effect waves-light btn-small pink lighten-2 modal-trigger buy-product-trigger" href="#buy-product-{{pid}}">Buy product</a>
-
+      
       <!-- Modal: Write Review -->
       <div id="write-review-{{pid}}" class="modal">
         <div class="modal-content">
@@ -143,7 +141,6 @@
         </div>
       </div>
 
-
       <!-- Modal for Buying Products -->
       <div id="buy-product-{{pid}}" class="modal">
         <div class="modal-content">
@@ -154,24 +151,14 @@
             
               <!-- Booking (hidden) -->
               <p>Order Product: {{productname}} </p>
-
+              
               <div class="input-field col s12 hide">
                 <input value="{{ pid }}" id="pid-{{pid}}" name="productid" type="text" class="validate">
                 <label for="pid-{{pid}}">Product ID</label>
               </div>
 
-              <div class="input-field col s12 hide">
-                <input value="{{ productname }}" id="pname-{{productname}}" name="productname" type="text" class="validate">
-                <label for="pname-{{productname}}">Product Name</label>
-              </div>
-
               <div class="input-field col s12">
-                <input id="oid-{{pid}}" name="orderid" type="text" class="validate">
-                <label>Order ID</label>
-              </div>
-
-              <div class="input-field col s12">
-                <input placeholder="1" id="n-{{pid}}" name="quantity" type="text" class="validate">
+                <input placeholder="100" id="n-{{pid}}" name="quantity" type="text" class="validate">
                 <label>Pick quantity</label>
               </div>
 

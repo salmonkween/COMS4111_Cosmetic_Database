@@ -15,9 +15,8 @@ A debugger such as "pdb" may be helpful for debugging.
 """
 
 import os
-from datetime import datetime
+# from datetime import datetime
 from sqlalchemy import *
-# from sqlalchemy.sql import func
 # from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, url_for
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
@@ -235,29 +234,6 @@ def write_review():
 
 
 
-# Action buying product in main page
-@app.route('/buy_product', methods=['POST'])
-def buy_product():
-    customerid = current_user.uid
-    orderdate = datetime.now()
-    
-    result = g.conn.execute(
-        "UPDATE invoice SET quantity=%s, orderid=%s WHERE \
-            customerid=%s AND productid=%s AND productname=%s AND orderdate = %s", 
-            request.form['quantity'], request.form['orderid'], customerid, 
-            request.form['productid'], request.form['productname'], orderdate
-            )
-
-    if result.rowcount == 0:
-        g.conn.execute(
-            "INSERT INTO invoice (orderid, customerid, productid, productname, orderdate, quantity) \
-                VALUES (%s, %s, %s, %s, %s, %s)", 
-                request.form['orderid'], customerid, request.form['productid'], 
-                request.form['productname'], orderdate, request.form['quantity']
-                )
-        
-    return redirect('/main')
-
 
 
 # ============================================================
@@ -306,6 +282,27 @@ def customer():
         )
 
     return render_template("customer.html", **context)
+
+
+
+
+# ============================================================
+#   PURCHASE
+# ============================================================
+@app.route('/purchase', methods=['POST'])
+def purchase():
+    customerid = current_user.uid
+
+    # Upsert bc no PostgreSQL 9.5
+    result = g.conn.execute("UPDATE invoice SET quantity=%s, orderid=%s WHERE customerid=%s AND productid=%s AND productname=%s AND orderdate = to_timestamp(%s, 'YYYY-MM-DD')", request.form['quantity'], request.form['orderid'], customerid, request.form['productid'], request.form['productname'], request.form['orderdate'])
+
+    if result.rowcount == 0:
+        g.conn.execute("INSERT INTO Book (orderid, customerid, productid, productname, orderdate, quantity) VALUES (%s, %s, %s, %s, to_timestamp(%s, 'YYYY-MM-DD HH24:MI'), %s)", request.form['orderid'], customerid, request.form['productid'], request.form['productname'], request.form['orderdate'], request.form['quantity'])
+
+    return render_template("purchase.html", **context)
+
+
+
 
 
 
