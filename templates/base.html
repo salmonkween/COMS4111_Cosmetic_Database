@@ -41,6 +41,7 @@
           {% if current_user.is_authenticated %}
           <li><a href="/main">Products</a></li>
           <li><a href="/customer">My Account</a></li>
+          <li><a href="/supplier">Supplier</a></li>
           <li><a href="logout">Logout</a></li>
           {% else %}
           <li><a href="/">Home</a></li>
@@ -54,6 +55,7 @@
       <li><h5>Hello {{ current_user.username }}</h5></li>
       <li><a href="/main">Products</a></li>
       <li><a href="/customer">My Account</a></li>
+      <li><a href="/supplier">Supplier</a></li>
       <li><a href="logout">Logout</a></li>
       {% else %}
       <li><a href="/">Home</a></li>
@@ -70,7 +72,7 @@
   <footer class="page-footer blue-grey darken-3">
     <div class="footer-copyright blue-grey darken-4">
       <div class="container">
-        © 2021 Coding Cow & Salmoonkween | COMS4111 Databases
+        © 2021 Wendy Doan & Qian Zhang | COMS4111 Databases
         <a class="grey-text text-lighten-4 right" href="https://github.com/salmonkween/COMS4111_Cosmetic_Database">Github Project</a>
       </div>
     </div>

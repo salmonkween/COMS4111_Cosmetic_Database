@@ -308,6 +308,43 @@ def customer():
     return render_template("customer.html", **context)
 
 
+# ============================================================
+#   Supplier
+# ============================================================
+@app.route('/supplier')
+@login_required
+def supplier ():
+    # Query: User info
+    # cursor = g.conn.execute(
+    #     )
+    
+    # user_info = []
+    # user_info = cursor.fetchall()
+    
+    # cursor.close()
+    
+    
+    # Query: Invoice for this Customer
+    cursor = g.conn.execute(
+        "SELECT T.productid, S.supplierid, S.suppliername, T.sum_q AS total_quantity \
+    FROM (SELECT productID, SUM(quantity) as sum_q \
+        FROM invoice GROUP BY productid)T, supplier S \
+        WHERE T.productid = S.productid ORDER BY T.sum_q DESC")
+
+    supplier_list= []
+    supplier_list = cursor.fetchall()
+
+    cursor.close()
+
+  
+   
+    context=dict(
+        supplier_list=supplier_list     
+        )
+
+    return render_template("supplier.html", **context)
+
+
 
 
 # ============================================================
