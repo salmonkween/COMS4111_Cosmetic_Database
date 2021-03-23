@@ -137,9 +137,13 @@ def main():
         pproductname = None if not request.form['pproductname'] else request.form['pproductname']
 
         pprice = None if not request.form['pprice'] else int(request.form['pprice'])
+        
+        #new just added
+        pcategory = None if not request.form['pcategory'] else request.form['pcategory']
 
-        cursor = g.conn.execute("SELECT * FROM product p WHERE (%s IS NULL OR p.productname = %s) AND (%s IS NULL OR p.price = %s)",
-            pproductname, pproductname, pprice, pprice)
+        #new just added
+        cursor = g.conn.execute("SELECT p.* FROM product p, belong b, category c WHERE (%s IS NULL OR p.productname = %s) AND (%s IS NULL OR p.price = %s) AND (%s IS NULL OR (c.categoryid=b.categoryid AND c.categoryname=%s AND b.productid=p.productid))",
+            pproductname, pproductname, pprice, pprice, pcategory, pcategory)
         product = cursor.fetchall()
         cursor.close()
     else:
@@ -227,6 +231,10 @@ def write_review():
             request.form['rid'], customerid, request.form['pid'], request.form['loved'], request.form['rating'], request.form['text'])
 
     return redirect('/main')
+
+
+
+
 
 
 
