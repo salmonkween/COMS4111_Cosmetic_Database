@@ -45,9 +45,7 @@ login_manager.login_view = 'index'
 #
 #     postgresql://USER:PASSWORD@104.196.152.219/proj1part2
 #
-# Change back to default when publishing the code
-#
-DATABASEURI = "postgresql://ad3801:5775@35.227.37.35/proj1part2"
+
 
 
 #
